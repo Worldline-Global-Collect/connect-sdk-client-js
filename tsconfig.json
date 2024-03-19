@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ESNext", // @see https://github.com/developit/microbundle#using-with-typescript
+    "module": "ESNext", // @see https://github.com/developit/microbundle#using-with-typescript
+    "lib": ["dom", "esnext"],
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "sourceMap": true,
+    "noEmit": true,
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

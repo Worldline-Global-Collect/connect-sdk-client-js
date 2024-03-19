@@ -1,0 +1,67 @@
+{
+  "name": "connect-sdk-client-js",
+  "version": "5.0.0",
+  "description": "The JavaScript based client SDK that can be used for client to server communication between you and the Worldline Global Collect platform",
+  "source": "./src/index.ts",
+  "module": "./dist/connect-sdk-client-js.js",
+  "main": "./dist/connect-sdk-client-js.cjs",
+  "unpkg": "./dist/connect-sdk-client-js.umd.js",
+  "homepage": "https://github.com/Worldline-Global-Collect/connect-sdk-client-js#readme",
+  "amdName": "connectsdk",
+  "creator": "Worldline Global Collect",
+  "exports": {
+    "types": "./dist/types/src/index.d.ts",
+    "require": "./dist/connect-sdk-client-js.cjs",
+    "default": "./dist/connect-sdk-client-js.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/types/src/index.d.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Worldline-Global-Collect/connect-sdk-client-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Worldline-Global-Collect/connect-sdk-client-js/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "author": "Worldline Connect",
+  "scripts": {
+    "watch": "microbundle watch",
+    "build": "microbundle build -f umd,esm,cjs --target web --sourcemap false",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint ./src --ext .ts",
+    "test": "vitest --config ./src/__tests__/unit/vitest.config.ts",
+    "test:integration": "vitest --config ./src/__tests__/integration/vitest.config.ts",
+    "tsc": "tsc --noEmit -p .",
+    "prepare": "husky install",
+    "typedoc": "typedoc --plugin typedoc-plugin-missing-exports ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/applepayjs": "^14.0.0",
+    "@types/googlepay": "^0.7.1",
+    "@types/node-forge": "^1.3.4",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "connect-sdk-nodejs": "^4.14.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^9.0.0",
+    "happy-dom": "^10.9.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.1",
+    "microbundle": "^0.15.1",
+    "node-forge": "^1.3.1",
+    "prettier": "^3.0.1",
+    "typedoc": "^0.25.0",
+    "typedoc-plugin-missing-exports": "^2.2.0",
+    "typescript": "5.3.3",
+    "vitest": "^0.34.1"
+  },
+  "volta": {
+    "node": "20.11.0",
+    "npm": "10.4.0"
+  }
+}

@@ -1,0 +1,31 @@
+node_modules
+/.project
+/npm-debug.log
+.vscode
+.idea
+*.iml
+*.tsbuildinfo
+.DS_Store
+.cache
+junit.xml
+
+# TypeDoc generation
+/docs
+
+# Microbundle visualization files
+stats.html
+
+# Distribution
+/dist
+
+# Tests
+.test-results.xml
+
+# Environment variable files
+.env*
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/

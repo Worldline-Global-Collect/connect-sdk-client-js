@@ -1,0 +1,9 @@
+{
+  "name": "Worldline Connect JavaScript SDK",
+  "readme": "README.md",
+  "exclude": ["**/node_modules/**"],
+  "excludePrivate": true,
+  "disableSources": true,
+  "hideGenerator": true,
+  "excludeExternals": true
+}

@@ -1,0 +1,14 @@
+# Browsers that we support
+# See https://github.com/browserslist/browserslist#browsers
+
+ChromeAndroid >= 87
+Chrome >= 69
+Edge >= 90
+Firefox >= 78
+Opera >= 85
+Samsung >= 7.4
+Safari >= 13.1
+ios_saf >= 14
+and_chr >= 103
+
+not dead

@@ -1,0 +1,4 @@
+{
+  "./src/**/*.{ts,json}": ["npx prettier --write"],
+  "./src/**/*.ts": ["bash -c tsc --noEmit", "npx eslint --fix"]
+}
