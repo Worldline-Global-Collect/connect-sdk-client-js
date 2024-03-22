@@ -1,7 +1,7 @@
 # Migration from version 4 to version 5
 
 The landscape of frontend development and supported technologies by browsers has evolved rapidly in recent years.
-To name a few; handling asynchronous code with native Promises, new javascript data structures `Map`, `Set`
+To name a few; handling asynchronous code with native Promises, new JavasSript data structures `Map`, `Set`
 and sequence operations like `find`, `include`, `some` are now more declarative and built into all stable browsers.
 
 Rewriting the codebase results in a smaller package size by using tree shaking and native APIs instead of polyfills.
@@ -49,7 +49,7 @@ interface Promise<T> {
 }
 ```
 
-This implementation introduces callback hell *(especially when another async method needed to be called with the response of the previous async method)*
+This implementation introduces callback hell *(especially when another async method needed to be called with the response of the previous async method)*:
 
 ```ts
 session.getIinDetails(partialCreditCardNumber, paymentDetails).then(
@@ -65,11 +65,11 @@ session.getIinDetails(partialCreditCardNumber, paymentDetails).then(
 )
 ```
 
-within version 5 this needs to be replaced with native Promise handling:
+Within version 5 this needs to be replaced with native Promise handling:
 
 ```ts
 try {
-	const iinDetails = await session.getIinDetails(partialCreditCardNumber, paymentDetails);
+  const iinDetails = await session.getIinDetails(partialCreditCardNumber, paymentDetails);
   const paymentProduct = await session.getPaymentProduct(iinDetails.paymentProductId, paymentDetails);
 } catch(error) {
   console.error(error);
@@ -80,7 +80,7 @@ try {
 
 ### Error handling
 
-Some methods in version 4 did not always return an instance of `Error` when a Promise was rejected. This could vary in different return types, such as `string`, `Object` or `JSON`. As a developer, you needed to be aware of the return type and value. This has changed in version 5, when a Promise is rejected, the rejected value is always an instance of `Error`.
+Some methods in version 4 did not always return an instance of `Error` when a Promise was rejected. This could vary in different return types, such as `string`, `Object` or `JSON`. As a developer, you needed to be aware of the return type and value. This has changed in version 5; when a Promise is rejected, the rejected value is always an instance of `Error`.
 
 #### `session.getPaymentProduct`
 
@@ -110,9 +110,9 @@ try {
   if (error instanceof ResponseJsonError) {
     // ResponseJsonError is thrown when there is an error with
     // a given id and an array of errors
-    error.message 	// error message as string
-    error.errorId 	// error unique identifier of the error as string
-    error.errors		// array of errors
+    error.message   // error message as string
+    error.errorId   // error unique identifier of the error as string
+    error.errors    // array of errors
   }
 
   if (error instanceof PaymentProductError) {
@@ -124,7 +124,7 @@ try {
 
   if (error instanceof ResponseError) {
     // ResponseError is thrown when the request to the backend API throws an error
-    error.message; 	// error message as string
+    error.message;  // error message as string
     error.response; // response from backend api
   }
 }
@@ -148,7 +148,7 @@ This has been replaced with:
 import { IinDetailsResponseError, ResponseError } from "connect-sdk-client-js";
 
 try {
-	const iinDetails = await session.getIinDetails(...);
+  const iinDetails = await session.getIinDetails(...);
 } catch(err) {
   // error occurred while fetching IIN details...
 
@@ -189,7 +189,6 @@ try {
   }
 }
 ```
-
 
 
 
@@ -293,7 +292,7 @@ const accountOnFileId = 2;
 items.getAccountOnFile(accountOnFileId);
 ```
 
-> The transformation will be add  `get` as prefix and remove the `ById` as suffix, make sure the method is name camel-cased.
+> The transformation will be: add  `get` as prefix and remove the `ById` as suffix, and make sure the method is name camel-cased.
 
 
 
@@ -327,11 +326,10 @@ define(['connectsdk'], (connectSdk) => {
 })
 ```
 
-Although it is still possible to use legacy AMD, it is not recommended in modern bundlers anymore, because of:
+Although it is still possible to use legacy AMD, it is not recommended in modern bundlers anymore, because of the following reasons:
 
 - can lead to waterfal loading (async loads dependency of dependencies)
 - hard to analyze for static analyzers
 - loader libraries are required unless transpiled
 
 We strongly recommend to use native JavaScript  **ECMAScript 6 modules** instead.
-
