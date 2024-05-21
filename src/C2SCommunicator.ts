@@ -72,94 +72,10 @@ export class C2SCommunicator<
     this._applePay = new ApplePay();
 
     if (_providedPaymentProduct) {
-      this._providedPaymentProduct = this.transformPaymentProductJSON(
+      this._providedPaymentProduct = this._sanitizePaymentProductJSON(
         _providedPaymentProduct,
       );
     }
-  }
-
-  private _cleanJSON<T extends PaymentProductJSON | PaymentProductGroupJSON>(
-    json: T,
-    url: string,
-  ): T {
-    for (const field of json.fields) {
-      field.type = field.displayHints?.obfuscate
-        ? 'password'
-        : _mapType.get(field.type) ?? 'text';
-
-      // helper code for templating tools like Handlebars
-      field.validators ??= [];
-      field.validators.push(
-        ...Object.keys(field.dataRestrictions.validators ?? {}),
-      );
-      if (field.displayHints?.formElement?.type === 'list') {
-        field.displayHints.formElement.list = true;
-      }
-
-      const fi = utils.url.formatImageUrl;
-
-      // set full image paths `displayHints.tooltip.image`
-      if (field.displayHints?.tooltip?.image) {
-        field.displayHints.tooltip.image = fi(
-          url,
-          field.displayHints.tooltip.image,
-        );
-      }
-
-      // set full image paths `displayHints.logo`
-      json.displayHints.logo = fi(url, json.displayHints.logo);
-      if (json.accountsOnFile) {
-        for (const aof of json.accountsOnFile) {
-          aof.displayHints.logo = fi(url, aof.displayHints.logo);
-        }
-      }
-
-      // The server orders in a different way, so we apply the Sort Order
-      json.fields.sort((a, b) => {
-        const _a = a.displayHints?.displayOrder ?? 0;
-        const _b = b.displayHints?.displayOrder ?? 0;
-        return _a < _b ? -1 : 1;
-      });
-    }
-
-    return json;
-  }
-
-  /**
-   * Sanitize payment products
-   * - Format displayHints logo image url
-   * - Sort by display order
-   */
-  private _sanitizePaymentProducts<
-    PaymentProduct extends
-      | BasicPaymentProductJSON
-      | BasicPaymentProductGroupJSON,
-  >(paymentProducts: PaymentProduct[], url: string): PaymentProduct[] {
-    const formatDisplayHintsLogo = <
-      T extends PaymentProduct | AccountOnFileJSON,
-    >(
-      obj: T,
-    ): T => ({
-      ...obj,
-      displayHints: {
-        ...obj.displayHints,
-        logo: utils.url.formatImageUrl(url, obj.displayHints.logo),
-      },
-    });
-
-    return paymentProducts
-      .map((product) => {
-        const _product = formatDisplayHintsLogo(product);
-        if (_product.accountsOnFile) {
-          _product.accountsOnFile = _product.accountsOnFile.map(
-            formatDisplayHintsLogo,
-          );
-        }
-        return _product;
-      })
-      .sort((a, b) =>
-        a.displayHints.displayOrder < b.displayHints.displayOrder ? -1 : 1,
-      );
   }
 
   private _createCacheKeyFromContext({
@@ -259,9 +175,8 @@ export class C2SCommunicator<
     }
 
     const json = { ...response.data };
-    json.paymentProducts = this._sanitizePaymentProducts(
+    json.paymentProducts = this._sanitizeBasicPaymentProductsJson(
       json.paymentProducts,
-      this._c2SCommunicatorConfiguration.assetUrl,
     );
 
     // report Apple Pay availability for current APPLE_PAY_PAYMENT_PRODUCT_ID
@@ -340,9 +255,8 @@ export class C2SCommunicator<
     }
 
     const json = response.data;
-    json.paymentProductGroups = this._sanitizePaymentProducts(
+    json.paymentProductGroups = this._sanitizeBasicPaymentProductsJson(
       json.paymentProductGroups,
-      this._c2SCommunicatorConfiguration.assetUrl,
     );
 
     this._cache.set(cacheKey, json);
@@ -411,7 +325,7 @@ export class C2SCommunicator<
       throw new ResponseError('failed to retrieve Payment Product', response);
     }
 
-    const json = this.transformPaymentProductJSON(response.data);
+    const json = this._sanitizePaymentProductJSON(response.data);
     this._cache.set(cacheKey, json);
 
     // throw an error when Apple Pay is available in the payment context,
@@ -504,7 +418,7 @@ export class C2SCommunicator<
       );
     }
 
-    const json = this.transformPaymentProductJSON(response.data);
+    const json = this._sanitizePaymentProductJSON(response.data);
     this._cache.set(cacheKey, json);
     return json;
   }
@@ -513,8 +427,7 @@ export class C2SCommunicator<
     partialCreditCardNumber: string,
     context: PaymentProductContext,
   ): Promise<IinDetailsResponse> {
-    const cacheKey =
-      'getPaymentProductIdByCreditCardNumber-' + partialCreditCardNumber;
+    const cacheKey = `getPaymentProductIdByCreditCardNumber-${partialCreditCardNumber}`;
 
     if (this._cache.has(cacheKey)) {
       return this._cache.get(cacheKey) as IinDetailsResponse;
@@ -813,14 +726,113 @@ export class C2SCommunicator<
   }
 
   /**
-   * Transforms the JSON representation of a payment product (group) so it
-   * matches the result of getPaymentProduct and getPaymentProductGroup.
+   * Sanitize basic payment products
+   *
+   * - Format displayHints logo image url
+   * - Sort by display order
    */
-  transformPaymentProductJSON = <
+  private _sanitizeBasicPaymentProductsJson<
+    T extends BasicPaymentProductJSON | BasicPaymentProductGroupJSON,
+  >(paymentProducts: T[]): T[] {
+    const assetUrl = this._c2SCommunicatorConfiguration.assetUrl;
+    const formatDisplayHintsLogo = <Obj extends T | AccountOnFileJSON>(
+      obj: Obj,
+    ): Obj => ({
+      ...obj,
+      displayHints: {
+        ...obj.displayHints,
+        logo: utils.url.formatImageUrl(assetUrl, obj.displayHints.logo),
+      },
+    });
+
+    return paymentProducts
+      .map((product) => {
+        const _product = formatDisplayHintsLogo(product);
+        return Object.assign(
+          _product,
+          _product.accountsOnFile && {
+            accountsOnFile: _product.accountsOnFile.map(formatDisplayHintsLogo),
+          },
+        );
+      })
+      .sort(
+        (a, b) => a.displayHints.displayOrder - b.displayHints.displayOrder,
+      );
+  }
+
+  /**
+   * Returns a copied sanitized payment product (group) json response,
+   * so it matches the result of `getPaymentProduct` and `getPaymentProductGroup`
+   *
+   * - add validators to fields
+   * - Sort fields by display order
+   * - format image urls (convert to absolute urls)
+   */
+  private _sanitizePaymentProductJSON = <
     T extends PaymentProductJSON | PaymentProductGroupJSON,
   >(
     json: T,
   ): T => {
-    return this._cleanJSON(json, this._c2SCommunicatorConfiguration.assetUrl);
+    const assetUrl = this._c2SCommunicatorConfiguration.assetUrl;
+    const fi = utils.url.formatImageUrl;
+
+    const fields = json.fields
+      ?.map((field) => {
+        const validators = [
+          ...(field.validators || []),
+          ...Object.keys(field.dataRestrictions?.validators ?? {}),
+        ];
+
+        const displayHints = field.displayHints
+          ? {
+              ...field.displayHints,
+              tooltip: field.displayHints.tooltip
+                ? {
+                    ...field.displayHints.tooltip,
+                    image: field.displayHints.tooltip.image
+                      ? utils.url.formatImageUrl(
+                          assetUrl,
+                          field.displayHints.tooltip.image,
+                        )
+                      : field.displayHints.tooltip.image,
+                  }
+                : field.displayHints.tooltip,
+            }
+          : field.displayHints;
+
+        const type = field.displayHints?.obfuscate
+          ? 'password'
+          : _mapType.get(field.type) || 'text';
+
+        return { ...field, type, validators, displayHints };
+      })
+      .sort(
+        (a, b) =>
+          (a.displayHints?.displayOrder ?? 0) -
+          (b.displayHints?.displayOrder ?? 0),
+      );
+
+    const displayHints = {
+      ...json.displayHints,
+      ...(json.displayHints?.logo
+        ? { logo: fi(assetUrl, json.displayHints.logo) }
+        : {}),
+    };
+
+    const accountsOnFile = json.accountsOnFile?.map((aof) => ({
+      ...aof,
+      displayHints: {
+        ...aof.displayHints,
+        logo: fi(assetUrl, aof.displayHints.logo),
+      },
+    }));
+
+    return Object.assign(
+      {},
+      json,
+      fields && { fields },
+      displayHints && { displayHints },
+      accountsOnFile && { accountsOnFile },
+    );
   };
 }

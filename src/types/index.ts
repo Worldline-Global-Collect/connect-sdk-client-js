@@ -7,3 +7,4 @@ export * from './applepay';
 export * from './communicator';
 export * from './iin';
 export * from './crypto';
+export * from './common';

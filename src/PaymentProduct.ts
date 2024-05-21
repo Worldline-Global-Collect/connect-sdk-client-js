@@ -14,7 +14,7 @@ export class PaymentProduct extends BasicPaymentProduct {
   constructor(readonly json: PaymentProductJSON) {
     super(json);
     this._paymentProductFieldMap = new Map(
-      json.fields.map((field) => {
+      json.fields?.map((field) => {
         const paymentProductField = new PaymentProductField(field);
         return [paymentProductField.id, paymentProductField];
       }),

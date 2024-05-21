@@ -158,7 +158,7 @@ export class PaymentRequest {
 
     for (const field of paymentProduct.paymentProductFields) {
       // is this field present in the request?
-      if (!field.dataRestrictions.isRequired) continue;
+      if (!field.dataRestrictions?.isRequired) continue;
 
       // if the account on file has the field we can ignore it
       const storedValue = this.getValue(field.id);

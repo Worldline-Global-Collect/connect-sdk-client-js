@@ -52,7 +52,7 @@ export type MobilePaymentProductSession302SpecificOutputJSON = {
 };
 
 export interface PaymentProductJSON extends BasicPaymentProductJSON {
-  fields: PaymentProductFieldJSON[];
+  fields?: PaymentProductFieldJSON[];
   fieldsWarning?: string;
 }
 
@@ -76,7 +76,7 @@ export type PaymentProduct863SpecificDataJSON = {
 };
 
 export type PaymentProductFieldJSON = {
-  dataRestrictions: PaymentProductFieldDataRestrictionsJSON;
+  dataRestrictions?: PaymentProductFieldDataRestrictionsJSON;
   displayHints?: PaymentProductFieldDisplayHintsJSON;
   id: string;
   type: string;
@@ -118,7 +118,7 @@ export type PaymentProductFieldFormElementJSON = {
 };
 
 export type PaymentProductFieldTooltipJSON = {
-  image: string;
+  image?: string;
   label?: string;
 };
 

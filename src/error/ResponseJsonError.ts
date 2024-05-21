@@ -1,5 +1,5 @@
 import type { APIErrorJSON, ErrorResponseJSON } from '../types';
-import type { Merge, RequiredBy } from '../types/common';
+import type { Merge, RequiredBy } from '../types';
 
 type Error = RequiredBy<
   Partial<APIErrorJSON>,

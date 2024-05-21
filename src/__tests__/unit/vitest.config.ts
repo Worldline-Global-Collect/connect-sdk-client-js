@@ -8,7 +8,7 @@ import { join } from 'path';
  */
 export default defineConfig({
   test: {
-    include: [join(__dirname, '**/*.test.ts')],
+    include: [join(import.meta.dirname, '**/*.test.ts')],
     environment: 'happy-dom',
     reporters: [process.env.CI ? 'junit' : 'verbose'],
     outputFile: 'test-results/.unit-test-results.xml',

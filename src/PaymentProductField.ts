@@ -9,7 +9,7 @@ import { PaymentProductFieldDisplayHints } from './PaymentProductFieldDisplayHin
 export class PaymentProductField {
   private _errorCodes: string[];
   readonly displayHints?: PaymentProductFieldDisplayHints;
-  readonly dataRestrictions: DataRestrictions;
+  readonly dataRestrictions?: DataRestrictions;
   readonly id: string;
   readonly type: string;
 
@@ -17,7 +17,9 @@ export class PaymentProductField {
     this._errorCodes = [];
     this.id = json.id;
     this.type = json.type;
-    this.dataRestrictions = new DataRestrictions(json.dataRestrictions);
+    this.dataRestrictions = json.dataRestrictions
+      ? new DataRestrictions(json.dataRestrictions)
+      : undefined;
     this.displayHints = json.displayHints
       ? new PaymentProductFieldDisplayHints(json.displayHints)
       : undefined;
@@ -49,7 +51,7 @@ export class PaymentProductField {
    */
   isValid(value: string): boolean {
     // isValid checks all data restrictions
-    const validators = this.dataRestrictions.validationRules;
+    const validators = this.dataRestrictions?.validationRules || [];
 
     // Apply masking value first
     const maskedValue = this.applyMask(value);
@@ -65,7 +67,7 @@ export class PaymentProductField {
 
   validateValue(request: PaymentRequest): boolean {
     // validateValue checks all data restrictions
-    const validators = this.dataRestrictions.validationRules;
+    const validators = this.dataRestrictions?.validationRules || [];
 
     const errorMessageIds = validators
       .filter((validator) => !validator.validateValue(request, this.id))
