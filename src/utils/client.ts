@@ -15,6 +15,7 @@ export const client = {
       locale: navigator.language,
       browserData: {
         javaScriptEnabled: true,
+        javaEnabled: navigator.javaEnabled(),
         colorDepth: screen.colorDepth,
         screenHeight: screen.height,
         screenWidth: screen.width,

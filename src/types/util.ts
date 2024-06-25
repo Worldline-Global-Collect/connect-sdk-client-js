@@ -7,6 +7,7 @@ export type Metadata = {
 
 export type BrowserData = {
   readonly javaScriptEnabled: true;
+  readonly javaEnabled: boolean;
   readonly colorDepth: number;
   readonly screenHeight: number;
   readonly screenWidth: number;
