@@ -64,7 +64,7 @@ export class ApplePay {
       applePaySession.onvalidatemerchant = (event) => {
         const sessionContext = {
           displayName: context.displayName,
-          validationURL: event.validationURL,
+          validationUrl: event.validationURL,
           domainName: window.location.hostname,
         };
         c2SCommunicator

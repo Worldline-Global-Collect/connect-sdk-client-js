@@ -1,7 +1,7 @@
 export type PaymentProductSessionContext = {
   displayName: string;
   domainName: string;
-  validationURL: string;
+  validationUrl: string;
 };
 
 export type PaymentProductSpecificInputs = {

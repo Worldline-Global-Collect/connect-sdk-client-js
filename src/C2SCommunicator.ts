@@ -656,8 +656,8 @@ export class C2SCommunicator<
     paymentProductId: BasicPaymentProductJSON['id'],
     context: PaymentProductSessionContext,
   ): Promise<CreatePaymentProductSessionResponseJSON> {
-    const { validationURL, domainName, displayName } = context;
-    const cacheKey = `createPaymentProductSession_${paymentProductId}_${validationURL}_${domainName}_${displayName}`;
+    const { validationUrl, domainName, displayName } = context;
+    const cacheKey = `createPaymentProductSession_${paymentProductId}_${validationUrl}_${domainName}_${displayName}`;
 
     if (this._cache.has(cacheKey)) {
       return this._cache.get(

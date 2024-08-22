@@ -144,7 +144,7 @@ export class GooglePay {
   private _getGooglePaymentsClient():
     | google.payments.api.PaymentsClient
     | undefined {
-    if (!this._paymentsClient) return;
+    if (this._paymentsClient) return this._paymentsClient;
 
     if (!window.google) {
       console.error(
