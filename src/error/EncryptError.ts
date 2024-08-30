@@ -6,5 +6,6 @@ export class EncryptError extends Error {
     readonly validationErrors: ValidationError[] = [],
   ) {
     super(message);
+    Error.captureStackTrace(this, EncryptError);
   }
 }

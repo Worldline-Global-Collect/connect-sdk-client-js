@@ -6,5 +6,6 @@ export class PaymentProductError extends Error {
     readonly json: PaymentProductJSON,
   ) {
     super(message);
+    Error.captureStackTrace(this, PaymentProductError);
   }
 }

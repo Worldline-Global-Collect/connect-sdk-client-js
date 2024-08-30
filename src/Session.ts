@@ -298,12 +298,12 @@ export class Session {
    */
   async createApplePayPayment(
     context: PaymentDetails,
-    paymentProductSpecificInput: ApplePaySpecificInput,
+    applePaySpecificInput: ApplePaySpecificInput,
     networks: string[],
   ): Promise<ApplePayInitResult> {
     return this._c2sCommunicator.initApplePayPayment(
       context,
-      paymentProductSpecificInput,
+      applePaySpecificInput,
       networks,
     );
   }

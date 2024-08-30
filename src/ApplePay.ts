@@ -7,6 +7,7 @@ import type {
 
 import { PaymentProductId } from './constants';
 import * as utils from './utils';
+import { ApplePayError, ApplePayErrorStatus, ResponseError } from './error';
 
 // This interface is used to break the circular import dependency between ApplePay and C2SCommunicator.
 // C2SCommunicator automatically implements it.
@@ -18,18 +19,31 @@ interface ApplePayC2SCommunicator {
   ): Promise<CreatePaymentProductSessionResponseJSON>;
 }
 
-export class ApplePay {
-  isApplePayAvailable(): boolean {
-    const isAvailable =
+/**
+ * Return `true` if Apple Pay can make payments in the browser
+ * Ignore errors being thrown by `ApplePaySession.canMakePayments()`
+ */
+function canMakePayments(): boolean {
+  try {
+    return (
       Object.hasOwn(window, 'ApplePaySession') &&
-      ApplePaySession.canMakePayments();
+      ApplePaySession.canMakePayments()
+    );
+  } catch (err) {
+    return false;
+  }
+}
 
+export class ApplePay {
+  private _isCancelled: boolean = false;
+
+  isApplePayAvailable(): boolean {
+    const isAvailable = canMakePayments();
     if (!isAvailable) {
       utils.client.unsupportedPaymentProductsInBrowser.add(
         PaymentProductId.APPLE_PAY,
       );
     }
-
     return isAvailable;
   }
 
@@ -38,6 +52,7 @@ export class ApplePay {
     c2SCommunicator: ApplePayC2SCommunicator,
   ): Promise<ApplePayInitResult> {
     return new Promise<ApplePayInitResult>((resolve, reject) => {
+      this._isCancelled = false;
       const countryCode = context.acquirerCountry
         ? context.acquirerCountry
         : context.countryCode;
@@ -56,33 +71,51 @@ export class ApplePay {
       const applePaySession = new ApplePaySession(1, payment);
       applePaySession.begin();
 
-      const onError = (error: unknown) => {
-        reject(error);
-        applePaySession.abort();
+      applePaySession.oncancel = () => {
+        this._isCancelled = true;
+        reject(
+          new ApplePayError('Payment cancelled', ApplePayErrorStatus.Cancelled),
+        );
       };
 
-      applePaySession.onvalidatemerchant = (event) => {
-        const sessionContext = {
-          displayName: context.displayName,
-          validationUrl: event.validationURL,
-          domainName: window.location.hostname,
-        };
-        c2SCommunicator
-          .createPaymentProductSession(
-            PaymentProductId.APPLE_PAY,
-            sessionContext,
-          )
-          .then(({ paymentProductSession302SpecificOutput }) => {
-            try {
-              const merchantSession = JSON.parse(
-                paymentProductSession302SpecificOutput?.sessionObject as string,
-              );
-              applePaySession.completeMerchantValidation(merchantSession);
-            } catch (e) {
-              onError(e);
-            }
-          })
-          .catch(onError);
+      applePaySession.onvalidatemerchant = async (event) => {
+        try {
+          const sessionContext = {
+            displayName: context.displayName,
+            validationUrl: event.validationURL,
+            domainName: window.location.hostname,
+          };
+
+          const { paymentProductSession302SpecificOutput } =
+            await c2SCommunicator.createPaymentProductSession(
+              PaymentProductId.APPLE_PAY,
+              sessionContext,
+            );
+
+          const merchantSession = JSON.parse(
+            paymentProductSession302SpecificOutput?.sessionObject as string,
+          );
+
+          applePaySession.completeMerchantValidation(merchantSession);
+        } catch (error) {
+          // Prevent throwing an error when the session is cancelled (`oncancel` event).
+          // The error is already thrown and the `applePaySession.abort()` is
+          // called internally by Apple Pay JS API.
+          if (this._isCancelled) return;
+
+          applePaySession.abort();
+
+          if (error instanceof ResponseError) return reject(error);
+          if (error instanceof Error) {
+            return reject(
+              new ApplePayError(
+                error.message,
+                ApplePayErrorStatus.ValidateMerchant,
+              ),
+            );
+          }
+          reject(error);
+        }
       };
 
       applePaySession.onpaymentauthorized = (event) => {
@@ -98,7 +131,12 @@ export class ApplePay {
             resolve({ message: 'Payment authorized', data: token });
             break;
           case ApplePaySession.STATUS_FAILURE:
-            reject(new Error('Error payment authorization'));
+            reject(
+              new ApplePayError(
+                'Error payment authorization',
+                ApplePayErrorStatus.PaymentAuthorized,
+              ),
+            );
             break;
         }
       };

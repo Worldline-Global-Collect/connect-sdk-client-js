@@ -11,5 +11,6 @@ export class IinDetailsResponseError extends Error {
     readonly json?: GetIINDetailsResponseJSON,
   ) {
     super(status);
+    Error.captureStackTrace(this, IinDetailsResponseError);
   }
 }

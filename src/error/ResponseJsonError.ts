@@ -19,5 +19,6 @@ export class ResponseJsonError extends Error {
     super(message);
     this.errorId = errorId;
     this.errors = errors;
+    Error.captureStackTrace(this, ResponseJsonError);
   }
 }
