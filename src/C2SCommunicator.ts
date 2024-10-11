@@ -205,6 +205,7 @@ export class C2SCommunicator<
             googlePayData,
           );
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         /* do nothing */
       }
@@ -486,6 +487,7 @@ export class C2SCommunicator<
       );
       this._cache.set(cacheKey, iinDetailsResponse);
       return iinDetailsResponse;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       throw new IinDetailsResponseError(IinDetailsStatus.UNKNOWN, json);
     }

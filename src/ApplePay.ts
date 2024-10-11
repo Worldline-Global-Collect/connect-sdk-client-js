@@ -29,6 +29,7 @@ function canMakePayments(): boolean {
       Object.hasOwn(window, 'ApplePaySession') &&
       ApplePaySession.canMakePayments()
     );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return false;
   }

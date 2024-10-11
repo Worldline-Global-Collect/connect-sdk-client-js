@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PaymentProduct } from '../../PaymentProduct';
 import { Encryptor } from '../../Encryptor';
@@ -13,6 +13,8 @@ const paymentProduct = new PaymentProduct({
   ...paymentProductJson,
   fields: [paymentProductFieldCardNumberJson],
 });
+
+vi.mock('../../utils/client');
 
 const encryptor = new Encryptor(Promise.resolve(publicKeyResponse));
 
