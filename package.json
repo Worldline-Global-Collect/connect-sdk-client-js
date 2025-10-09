@@ -1,6 +1,6 @@
 {
   "name": "connect-sdk-client-js",
-  "version": "6.0.5",
+  "version": "6.0.6",
   "description": "The JavaScript based client SDK that can be used for client to server communication between you and the Worldline Global Collect platform",
   "source": "./src/index.ts",
   "module": "./dist/connect-sdk-client-js.js",
@@ -41,32 +41,32 @@
   },
   "dependencies": {
     "@types/applepayjs": "^14.0.9",
-    "@types/googlepay": "^0.7.6",
-    "@types/node-forge": "^1.3.11"
+    "@types/googlepay": "^0.7.7",
+    "@types/node-forge": "^1.3.14"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.23.0",
-    "@typescript-eslint/eslint-plugin": "^8.29.0",
-    "@typescript-eslint/parser": "^8.29.0",
-    "connect-sdk-nodejs": "^5.5.0",
-    "dotenv": "^16.5.0",
-    "eslint": "^9.23.0",
-    "eslint-config-prettier": "^10.1.1",
-    "happy-dom": "^15.7.4",
+    "@eslint/js": "^9.36.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "connect-sdk-nodejs": "^5.7.0",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "happy-dom": "^18.0.1",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.0",
+    "lint-staged": "^16.2.0",
     "microbundle": "^0.15.1",
     "node-fetch": "^3.3.2",
     "node-forge": "^1.3.1",
-    "prettier": "^3.5.3",
-    "typedoc": "^0.28.1",
-    "typedoc-plugin-missing-exports": "^4.0.0",
-    "typescript": "5.8.2",
-    "vitest": "^3.1.1"
+    "prettier": "^3.6.2",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-missing-exports": "^4.1.0",
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
   },
   "volta": {
     "node": "23.11.0",
-    "npm": "11.2.0"
+    "npm": "11.6.1"
   }
 }
