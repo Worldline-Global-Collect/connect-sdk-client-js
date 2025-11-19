@@ -1,3 +1,5 @@
+import { captureStackTrace } from '../utils/captureStackTrace';
+
 export const ApplePayErrorStatus = {
   Cancelled: 'cancelled',
   ValidateMerchant: 'validateMerchant',
@@ -12,6 +14,6 @@ export class ApplePayError extends Error {
     readonly status: ApplePayErrorStatus,
   ) {
     super(message);
-    Error.captureStackTrace(this, ApplePayError);
+    captureStackTrace(this, ApplePayError);
   }
 }

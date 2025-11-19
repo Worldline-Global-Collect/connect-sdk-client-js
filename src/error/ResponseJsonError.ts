@@ -1,5 +1,6 @@
 import type { APIErrorJSON, ErrorResponseJSON } from '../types';
 import type { Merge, RequiredBy } from '../types';
+import { captureStackTrace } from '../utils/captureStackTrace';
 
 type Error = RequiredBy<
   Partial<APIErrorJSON>,
@@ -19,6 +20,6 @@ export class ResponseJsonError extends Error {
     super(message);
     this.errorId = errorId;
     this.errors = errors;
-    Error.captureStackTrace(this, ResponseJsonError);
+    captureStackTrace(this, ResponseJsonError);
   }
 }

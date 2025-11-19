@@ -1,4 +1,5 @@
 import type { ValidationError } from '../types';
+import { captureStackTrace } from '../utils/captureStackTrace';
 
 export class EncryptError extends Error {
   constructor(
@@ -6,6 +7,6 @@ export class EncryptError extends Error {
     readonly validationErrors: ValidationError[] = [],
   ) {
     super(message);
-    Error.captureStackTrace(this, EncryptError);
+    captureStackTrace(this, EncryptError);
   }
 }

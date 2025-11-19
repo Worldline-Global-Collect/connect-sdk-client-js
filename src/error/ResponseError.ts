@@ -1,4 +1,5 @@
 import type { SdkResponse } from '../types';
+import { captureStackTrace } from '../utils/captureStackTrace';
 
 export class ResponseError<Response extends SdkResponse> extends Error {
   readonly status: Response['status'];
@@ -13,6 +14,6 @@ export class ResponseError<Response extends SdkResponse> extends Error {
     this.status = response.status;
     this.success = response.success;
     this.data = response.data;
-    Error.captureStackTrace(this, ResponseError);
+    captureStackTrace(this, ResponseError);
   }
 }

@@ -1,4 +1,5 @@
 import type { IinDetailsStatus, GetIINDetailsResponseJSON } from '../types';
+import { captureStackTrace } from '../utils/captureStackTrace';
 
 type IinDetailsResponseErrorStatus = Extract<
   IinDetailsStatus,
@@ -11,6 +12,6 @@ export class IinDetailsResponseError extends Error {
     readonly json?: GetIINDetailsResponseJSON,
   ) {
     super(status);
-    Error.captureStackTrace(this, IinDetailsResponseError);
+    captureStackTrace(this, IinDetailsResponseError);
   }
 }

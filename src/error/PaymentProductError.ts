@@ -1,4 +1,5 @@
 import type { PaymentProductJSON } from '../types';
+import { captureStackTrace } from '../utils/captureStackTrace';
 
 export class PaymentProductError extends Error {
   constructor(
@@ -6,6 +7,6 @@ export class PaymentProductError extends Error {
     readonly json: PaymentProductJSON,
   ) {
     super(message);
-    Error.captureStackTrace(this, PaymentProductError);
+    captureStackTrace(this, PaymentProductError);
   }
 }
