@@ -9,7 +9,7 @@
     "sourceMap": true,
     "noEmit": true,
     "rootDir": "./",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
@@ -19,6 +19,8 @@
     "isolatedModules": true,
     "strict": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    // ApplePayJS and GooglePay types are not included in the types array by default from TypeScript 6+
+    "types": ["applepayjs", "googlepay"]
   }
 }

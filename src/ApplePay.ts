@@ -53,6 +53,19 @@ export class ApplePay {
     c2SCommunicator: ApplePayC2SCommunicator,
   ): Promise<ApplePayInitResult> {
     return new Promise<ApplePayInitResult>((resolve, reject) => {
+      // Deferred payments are not supported, so an error is thrown in case deferredPaymentDate is supplied
+      if (
+        context.recurringPaymentRequest?.regularBilling.deferredPaymentDate ||
+        context.recurringPaymentRequest?.trialBilling?.deferredPaymentDate
+      ) {
+        return reject(
+          new ApplePayError(
+            'Deferred payments are currently not supported.',
+            ApplePayErrorStatus.Cancelled,
+          ),
+        );
+      }
+
       this._isCancelled = false;
       const countryCode = context.acquirerCountry
         ? context.acquirerCountry
@@ -67,6 +80,7 @@ export class ApplePay {
         },
         supportedNetworks: context.networks,
         merchantCapabilities: ['supports3DS'],
+        recurringPaymentRequest: context.recurringPaymentRequest,
       };
 
       const applePaySession = new ApplePaySession(1, payment);

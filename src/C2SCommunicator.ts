@@ -54,8 +54,7 @@ const _mapType = new Map([
 
 export class C2SCommunicator<
   PaymentProduct extends PaymentProductJSON | PaymentProductGroupJSON =
-    | PaymentProductJSON
-    | PaymentProductGroupJSON,
+    PaymentProductJSON | PaymentProductGroupJSON,
 > {
   readonly _c2SCommunicatorConfiguration: C2SCommunicatorConfiguration;
   readonly _cache: Map<string, unknown>;
@@ -354,6 +353,7 @@ export class C2SCommunicator<
         );
       }
 
+      // eslint-disable-next-line
       let isGooglePayAvailable = false;
       try {
         isGooglePayAvailable = await this._googlePay.isGooglePayAvailable(
@@ -695,11 +695,13 @@ export class C2SCommunicator<
     context: PaymentDetails,
     paymentProductSpecificInput: ApplePaySpecificInput,
     networks: string[],
+    recurringPaymentRequest?: ApplePayJS.ApplePayRecurringPaymentRequest,
   ): Promise<ApplePayInitResult> {
     const payload: ApplePayPaymentDetails = {
       ...context,
       displayName: paymentProductSpecificInput.merchantName,
       networks,
+      recurringPaymentRequest,
       ...(paymentProductSpecificInput.acquirerCountry
         ? { acquirerCountry: paymentProductSpecificInput.acquirerCountry }
         : {}),

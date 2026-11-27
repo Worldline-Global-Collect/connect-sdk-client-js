@@ -1,6 +1,6 @@
 {
   "name": "connect-sdk-client-js",
-  "version": "6.0.7",
+  "version": "6.1.0",
   "description": "The JavaScript based client SDK that can be used for client to server communication between you and the Worldline Global Collect platform",
   "source": "./src/index.ts",
   "module": "./dist/connect-sdk-client-js.js",
@@ -36,37 +36,41 @@
     "test": "vitest --config ./src/__tests__/unit/vitest.config.ts",
     "test:integration": "vitest --config ./src/__tests__/integration/vitest.config.ts",
     "tsc": "tsc --noEmit -p .",
-    "prepare": "husky install",
+    "prepare": "husky",
     "typedoc": "typedoc --plugin typedoc-plugin-missing-exports ./src/index.ts"
   },
   "dependencies": {
     "@types/applepayjs": "^14.0.9",
-    "@types/googlepay": "^0.7.7",
+    "@types/googlepay": "^0.7.13",
     "@types/node-forge": "^1.3.14"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "connect-sdk-nodejs": "^5.7.0",
-    "dotenv": "^17.2.2",
-    "eslint": "^9.36.0",
+    "@eslint/eslintrc": "^3.3.7",
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "connect-sdk-nodejs": "^8.3.2",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
-    "happy-dom": "^18.0.1",
+    "happy-dom": "^20.14.5",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.0",
+    "lint-staged": "^17.5.0",
     "microbundle": "^0.15.1",
     "node-fetch": "^3.3.2",
-    "node-forge": "^1.3.1",
-    "prettier": "^3.6.2",
-    "typedoc": "^0.28.13",
-    "typedoc-plugin-missing-exports": "^4.1.0",
-    "typescript": "5.9.2",
-    "vitest": "^3.2.4"
+    "node-forge": "^1.4.0",
+    "prettier": "^3.9.7",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-missing-exports": "^4.1.4",
+    "typescript": "6.0.3",
+    "vitest": "^5.0.1"
   },
   "volta": {
-    "node": "23.11.0",
-    "npm": "11.6.1"
+    "node": "26.10.0",
+    "npm": "12.2.0"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.3",
+    "rollup-plugin-typescript2": "0.37.0"
   }
 }

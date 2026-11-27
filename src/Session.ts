@@ -307,4 +307,21 @@ export class Session {
       networks,
     );
   }
+
+  /**
+   * Initialize recurring Apple Pay payment
+   */
+  async createApplePayRecurringPayment(
+    context: PaymentDetails,
+    applePaySpecificInput: ApplePaySpecificInput,
+    applePayRecurringPaymentRequest: ApplePayJS.ApplePayRecurringPaymentRequest,
+    networks: string[],
+  ): Promise<ApplePayInitResult> {
+    return this._c2sCommunicator.initApplePayPayment(
+      context,
+      applePaySpecificInput,
+      networks,
+      applePayRecurringPaymentRequest,
+    );
+  }
 }
